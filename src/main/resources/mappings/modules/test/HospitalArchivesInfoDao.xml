@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tc.website.modules.test.dao.HospitalArchivesInfoDao">
+    
+	<sql id="hospitalArchivesInfoColumns">
+		a.id AS "id",
+		a.created_time AS "createdTime",
+		a.updated_time AS "updatedTime",
+		a.data_state AS "dataState",
+		a.hospital_name AS "hospitalName",
+		a.hospital_code AS "hospitalCode",
+		a.hospital_principal AS "hospitalPrincipal",
+		a.hospital_contact AS "hospitalContact",
+		a.hospital_email AS "hospitalEmail",
+		a.hospital__address AS "hospitalAddress",
+		a.office_phone AS "officePhone"
+	</sql>
+	
+	<sql id="hospitalArchivesInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="HospitalArchivesInfo">
+		SELECT 
+			<include refid="hospitalArchivesInfoColumns"/>
+		FROM t_hospital_archives_info a
+		<include refid="hospitalArchivesInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HospitalArchivesInfo">
+		SELECT 
+			<include refid="hospitalArchivesInfoColumns"/>
+		FROM t_hospital_archives_info a
+		<include refid="hospitalArchivesInfoJoins"/>
+		<where>
+			<if test="hospitalName != null and hospitalName != ''">
+				and a.hospital_name like '%${hospitalName}%'
+			</if>
+			<if test="hospitalCode != null and hospitalCode != ''">
+				and a.hospital_code like '%${hospitalCode}%'
+			</if>
+			<if test="hospitalPrincipal != null and hospitalPrincipal != ''">
+				and a.hospital_principal like '%${hospitalPrincipal}%'
+			</if>
+			<if test="hospitalContact != null and hospitalContact != ''">
+				and a.hospital_contact like '%${hospitalContact}%'
+			</if>
+			<if test="beginDate != null and beginDate != ''">
+				and DATE_FORMAT(a.created_time, '%Y-%m-%d') >= #{beginDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(a.created_time, '%Y-%m-%d') &lt;= #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HospitalArchivesInfo">
+		SELECT 
+			<include refid="hospitalArchivesInfoColumns"/>
+		FROM t_hospital_archives_info a
+		<include refid="hospitalArchivesInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO t_hospital_archives_info(
+			created_time,
+			updated_time,
+			data_state,
+			hospital_name,
+			hospital_code,
+			hospital_principal,
+			hospital_contact,
+			hospital_email,
+			hospital__address,
+			office_phone
+		) VALUES (
+			#{createdTime},
+			#{updatedTime},
+			#{dataState},
+			#{hospitalName},
+			#{hospitalCode},
+			#{hospitalPrincipal},
+			#{hospitalContact},
+			#{hospitalEmail},
+			#{hospitalAddress},
+			#{officePhone}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE t_hospital_archives_info SET 	
+			created_time = #{createdTime},
+			updated_time = #{updatedTime},
+			data_state = #{dataState},
+			hospital_name = #{hospitalName},
+			hospital_code = #{hospitalCode},
+			hospital_principal = #{hospitalPrincipal},
+			hospital_contact = #{hospitalContact},
+			hospital_email = #{hospitalEmail},
+			hospital__address = #{hospitalAddress},
+			office_phone = #{officePhone}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM t_hospital_archives_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

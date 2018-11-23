@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tc.website.modules.app.dao.ConfigDao">
+    
+	<sql id="configColumns">
+		a.id AS "id",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.disk_path AS "diskPath",
+		a.temp_path AS "tempPath",
+		a.is_clear_temp AS "isClearTemp"
+	</sql>
+	
+	<sql id="configJoins">
+	</sql>
+    
+	<select id="get" resultType="Config">
+		SELECT 
+			<include refid="configColumns"/>
+		FROM app_config a
+		<include refid="configJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Config">
+		SELECT 
+			<include refid="configColumns"/>
+		FROM app_config a
+		<include refid="configJoins"/>
+		<where>
+			
+			<if test="updateDate != null and updateDate != ''">
+				AND a.update_date = #{updateDate}
+			</if>
+			<if test="diskPath != null and diskPath != ''">
+				AND a.disk_path = #{diskPath}
+			</if>
+			<if test="tempPath != null and tempPath != ''">
+				AND a.temp_path = #{tempPath}
+			</if>
+			<if test="isClearTemp != null and isClearTemp != ''">
+				AND a.is_clear_temp = #{isClearTemp}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Config">
+		SELECT 
+			<include refid="configColumns"/>
+		FROM app_config a
+		<include refid="configJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO app_config(
+			id,
+			create_date,
+			update_date,
+			disk_path,
+			temp_path,
+			is_clear_temp
+		) VALUES (
+			#{id},
+			#{createDate},
+			#{updateDate},
+			#{diskPath},
+			#{tempPath},
+			#{isClearTemp}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE app_config SET 	
+			update_date = #{updateDate},
+			disk_path = #{diskPath},
+			temp_path = #{tempPath},
+			is_clear_temp = #{isClearTemp}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM app_config
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tc.website.modules.app.dao.LicenceDao">
+    
+	<sql id="licenceColumns">
+		a.id AS "id",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.machine_code AS "machineCode",
+		a.licence_reg AS "licenceReg",
+		a.licence_verify AS "licenceVerify",
+		a.licence_value AS "licenceValue"
+	</sql>
+	
+	<sql id="licenceJoins">
+	</sql>
+    
+	<select id="get" resultType="Licence">
+		SELECT 
+			<include refid="licenceColumns"/>
+		FROM app_licence a
+		<include refid="licenceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Licence">
+		SELECT 
+			<include refid="licenceColumns"/>
+		FROM app_licence a
+		<include refid="licenceJoins"/>
+		<where>
+			
+			<if test="machineCode != null and machineCode != ''">
+				AND a.machine_code = #{machineCode}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Licence">
+		SELECT 
+			<include refid="licenceColumns"/>
+		FROM app_licence a
+		<include refid="licenceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findOneByMachineCode" resultType="Licence">
+		SELECT
+		<include refid="licenceColumns"/>
+		FROM app_licence a
+		<include refid="licenceJoins"/>
+		WHERE a.machine_code = #{machineCode}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO app_licence(
+			id,
+			create_date,
+			update_date,
+			machine_code,
+			licence_reg,
+			licence_verify,
+			licence_value
+		) VALUES (
+			#{id},
+			#{createDate},
+			#{updateDate},
+			#{machineCode},
+			#{licenceReg},
+			#{licenceVerify},
+			#{licenceValue}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE app_licence SET 	
+			machine_code = #{machineCode},
+			licence_reg = #{licenceReg},
+			licence_verify = #{licenceVerify},
+			licence_value = #{licenceValue}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM app_licence
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
